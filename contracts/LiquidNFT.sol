@@ -67,7 +67,6 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
     // Note: This implementation assumes that the fees collected by feeGeneratingContract are also in terms of token2Stake
     function getUnderlyingValue(uint256 _tokenID) public view override returns (uint256 underlyingNFTValue) {
         (uint256 liquidity, uint256 share,,) = getNFTData(_tokenID);
-        //uint256 feeGeneratingContractReserve = IFeeGeneratingContract(feeGeneratingContract).getFeeReserve();
         underlyingNFTValue = liquidity + share2Amount(share);
     }
 
@@ -77,7 +76,6 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
         uint256 upperBoundBlock = currentBlock <= vestingEnd ? currentBlock : vestingEnd;
         uint256 redeemableLiquidity = liquidity * (upperBoundBlock - vestingStart) / vestingPeriod;
         uint256 redeemableShare = share * (upperBoundBlock - vestingStart) / vestingPeriod;
-        //uint256 feeGeneratingContractReserve = IFeeGeneratingContract(feeGeneratingContract).getFeeReserve();
         redeemableAmount = redeemableLiquidity + share2Amount(redeemableShare);
     }
 
