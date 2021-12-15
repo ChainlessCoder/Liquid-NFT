@@ -111,18 +111,20 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
         uint256 currentBlock = block.number;
         uint256 dif;
         uint256 dif2share;
-        (uint256 NFTLiquidity, uint256 NFTShare, , uint256 vestingEnd) = getNFTData(_tokenID);
+        uint256 underlyingValue;
+        (uint256 NFTLiquidity, uint256 NFTShare, , ) = getNFTData(_tokenID);
         if (NFTLiquidity >= _amount) {
             token.safeTransfer(_to, _amount);
-            tokenData[_tokenID] = NFTData(NFTLiquidity - _amount, NFTShare, currentBlock, vestingEnd);
+            tokenData[_tokenID] = NFTData(NFTLiquidity - _amount, NFTShare, currentBlock, currentBlock + vestingPeriod);
         } else {
             dif = _amount - NFTLiquidity;
             if (NFTLiquidity != 0){
                 token.safeTransfer(_to, NFTLiquidity);
             }
+            underlyingValue = getUnderlyingValue(_tokenID);
             IFeeGeneratingContract(feeGeneratingContract).redeemFees(_to, dif);
-            dif2share = NFTShare * dif / (redeemableAmount - NFTLiquidity);
-            tokenData[_tokenID] = NFTData(0, NFTShare - dif2share, currentBlock, vestingEnd);
+            dif2share = NFTShare * dif / (underlyingValue - NFTLiquidity);
+            tokenData[_tokenID] = NFTData(0, NFTShare - dif2share, currentBlock, currentBlock + vestingPeriod);
             totalReserveShare -= dif2share;
         }
         emit Redeemed(msg.sender, _amount, _tokenID);
