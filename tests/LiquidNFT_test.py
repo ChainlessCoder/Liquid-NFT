@@ -55,7 +55,7 @@ def test_boost(liquid_nft, token):
     token.approve(liquid_nft.address, 50e18, {'from': accounts[1]})
     liquid_nft.boost(50e18, 2, {'from': accounts[1]})
     liquidity1, share1, _, _ = liquid_nft.getNFTData(1) 
-    liquidity2, share2, _, _ = liquid_nft.getNFTData(2) 
+    liquidity2, share2, vesitng_start, vesitng_end = liquid_nft.getNFTData(2) 
     assert share1 == 1e18 
     new_share = (1e18 * 10e18 / (2*20e18)) + (1e18 * 50e18 / (3 * 70e18))
     # python rounding error
@@ -66,3 +66,19 @@ def test_boost(liquid_nft, token):
     underlying_value2 = liquid_nft.getUnderlyingValue(2)
     dif = underlying_value2 - (liquidity2 + (20e18 * share2 / (share1 + share2)))
     assert dif == 997
+    chain = Chain()
+    assert vesitng_start == chain.height
+
+def test_getRedeemableTokenAmount(liquid_nft, token):
+    token.mint(accounts[2], 1000e18, {'from': accounts[0]})
+    token.approve(liquid_nft.address, 10e18, {'from': accounts[2]})
+    liquid_nft.mint(accounts[2], 10e18, {'from': accounts[2]})
+    assert liquid_nft.getRedeemableTokenAmount(3) == 0
+    underlying_value = liquid_nft.getUnderlyingValue(3)
+    _, _, vesting_start, vesting_end = liquid_nft.getNFTData(3) 
+    vesting_period = vesting_end - vesting_start
+    assert vesting_period == 100
+    Chain().mine(20)
+    new_redeemable_value = liquid_nft.getRedeemableTokenAmount(3)
+    dif = new_redeemable_value - underlying_value * 20 / 100
+    assert dif == -53
