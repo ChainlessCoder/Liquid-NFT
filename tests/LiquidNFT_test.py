@@ -82,3 +82,9 @@ def test_getRedeemableTokenAmount(liquid_nft, token):
     new_redeemable_value = liquid_nft.getRedeemableTokenAmount(3)
     dif = new_redeemable_value - underlying_value * 20 / 100
     assert dif == -53
+
+#def test_redeem(liquid_nft, token):
+#    token.mint(accounts[3], 1000e18, {'from': accounts[0]})
+#    token.approve(liquid_nft.address, 10e18, {'from': accounts[3]})
+#    liquid_nft.mint(accounts[3], 10e18, {'from': accounts[3]})
+

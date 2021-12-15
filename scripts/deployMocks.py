@@ -2,9 +2,14 @@
 from brownie import accounts, LiquidNFT, FeeGeneratingContract, MintableERC20Mock
 
 def main():
+    # testing address 
+    addr = '0x4D39DC70B6C840799435d1F036D773db85FedC9A'.lower()
     # deploy mock ERC20 and mint some initial tokens
     token = MintableERC20Mock.deploy({'from': accounts[0]})
-    
+
+    # mint some tokens
+    token.mint(addr, 10000e18, {'from': accounts[0]})
+
     # deploy feeGeneratingContract (SOC mock)
     deepPool = FeeGeneratingContract.deploy(token.address, {'from': accounts[0]})
 

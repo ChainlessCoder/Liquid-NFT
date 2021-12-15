@@ -43,7 +43,6 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
         require(token.balanceOf(msg.sender) >= _amount, "LiquidNFT: Amount exceeds balance");
         token.safeTransferFrom(msg.sender, address(this), _amount);
         share = 1e18 * _amount / ((_tokenIds.current() + 1) * token.balanceOf(address(this)));
-        //share = 1e18 * _amount / (10000 * 100000000e18);
     }
 
     function getNFTData(uint256 _tokenID) public view override returns (
