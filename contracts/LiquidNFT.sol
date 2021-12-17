@@ -41,7 +41,7 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
         IERC20 token = IERC20(token2Stake);
         require(token.balanceOf(msg.sender) >= _amount, "LiquidNFT: Amount exceeds balance");
         token.safeTransferFrom(msg.sender, address(this), _amount);
-        share = 1e18 * _amount / ((_tokenIds.current() + 1) * token.balanceOf(address(this)));
+        share = 1e18 * _amount / (token.balanceOf(address(this)));
     }
 
     function getNFTData(uint256 _tokenID) public view override returns (
@@ -91,6 +91,7 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
     }
 
     function boost(uint256 _amount, uint256 _tokenID) public override returns (bool) {
+        require(msg.sender == ownerOf(_tokenID), "LiquidNFT: Not the owner of the NFT");
         uint256 share = stake(_amount);
         totalReserveShare += share;
         uint256 currentBlock = block.number;
