@@ -15,7 +15,7 @@ contract LiquidNFT is ILiquidNFT, ERC721 {
     Counters.Counter private _tokenIds;
     address private token2Stake; // the token used to mint Liquid NFTs
     address private feeGeneratingContract; // the actual DeFi product that generates income
-    uint256 private totalReserveShare = 0;
+    uint256 public totalReserveShare = 0;
     uint256 private vestingPeriod; // e.g. if set to ~12 months of blocks, NFT gets 100% redeemable after 1 year
     mapping(uint256 => NFTData) private tokenData;
 
